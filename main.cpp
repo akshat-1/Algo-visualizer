@@ -2,6 +2,8 @@
 #include <time.h>
 #include <chrono>
 #include <thread>
+#include<iostream>
+
 
 // Method declarations
 void shuffle();
@@ -14,15 +16,29 @@ int  partition(int p, int q);
 void mergeSort(int start, int end);
 void quickSort(int p, int q);
 void bubbleSort();
+void Force_close();
 
 // Global Variables
-sf::RenderWindow viewport(sf::VideoMode(1200, 600), "Sorting Algorithm Visualizer");
+sf::RenderWindow viewport(sf::VideoMode(1200, 600), "Algo-Visualizer");
 int rects[100];
 bool sorted;
+sf::Font font;
+sf::Text text;
+
+
 
 int main()
 {
-    
+    if(!font.loadFromFile("Arial.ttf"))
+{
+    std::cout<<"ERROR"<<std::endl;
+    return 0;
+}
+text.setFont(font);
+text.setString("HELLO");
+text.setCharacterSize(15);
+text.setFillColor(sf::Color::White);
+viewport.draw(text);
     srand(time(NULL));
 
     shuffle();
@@ -74,7 +90,7 @@ int main()
           
 
             // Runs selection sort
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
                 shuffle();
                 selectionSort();
                 display(0, 10);
@@ -82,24 +98,31 @@ int main()
             }
 
             // Runs bubble sort
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5)) {
                 shuffle();
                 bubbleSort();
-                display(0, 1);
+                display(0, 10);
                 sorted = true;
             }
             
-            // Runs insertion sort
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) shuffle();        
+            // shufffle
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) shuffle();   
 
-            // Displays current sorted array for debugging
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) display(0, 1);
+        
+            
         }
     }
 
-    delete[] rects;
+    
 }
-
+void Force_close()
+{
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+            {
+                viewport.close();
+               return;
+            }
+}
 // Shuffles the number bars
 void shuffle()
 {
@@ -145,9 +168,9 @@ void selectionSort() {
     for (int i = 0; i < 99; i++)
     {
         minIndex = i;
-
+    Force_close();
         for (int j = i+1; j < 100; j++)
-        {
+        {   Force_close();
             if (rects[j] < rects[minIndex])
             {
                 minIndex = j;
@@ -168,12 +191,12 @@ void insertionSort()
     int key, i, j;
 
     for (i = 0; i < 100; i++)
-    {
+    {   Force_close();
         key = rects[i];
         j = i - 1;
 
         while (j >= 0 && rects[j] > key)
-        {
+        {   Force_close();
             rects[j + 1] = rects[j];
             j = j - 1;
             display(j, 10);
@@ -187,71 +210,68 @@ void insertionSort()
 // Best: O(nlogn), Worst: O(nlogn), Average: O(nlogn)
 void merge_sorted(int s, int m, int e)
 {
-    
-    // int const leftNum = s - m + 1;
-    // int const rightNum = m - e;
-
-    // int* leftArr = new int[leftNum];
-    // int* rightArr = new int[rightNum];
-
-    // for (int i = 0; i < leftNum; i++) leftArr[i] = rects[s + i];
-    // for (int j = 0; j < rightNum; j++) rightArr[j] = rects[m + j + 1];
-
-    // int leftIndex = 0, rightIndex = 0, mergeIndex = s;
-
-    // // Merging the temp arrays into the rects array
-    // while (leftIndex < leftNum && rightIndex < rightNum)
-    // {
-    //     if (leftArr[leftIndex] <= rightArr[rightIndex])
-    //     {
-    //         rects[mergeIndex] = leftArr[leftIndex++];
-    //         display(mergeIndex, 10);
-           
-    //         mergeIndex++;
-    //     }
-    //     else
-    //     {
-    //         rects[mergeIndex] = rightArr[rightIndex++];
-    //         display(mergeIndex, 10);
-            
-    //         mergeIndex++;
-    //     }
-    // }
-
-    // // Remaining left array elements are placed in the rects array
-    // while (leftIndex < leftNum)
-    // {
-    //     rects[mergeIndex] = leftArr[leftIndex++];
-    //     display(mergeIndex, 10);
+    int i=0, j = 0, size_left = m-s+1, size_right = e-m, merge_at =s;
+    int left[size_left] , right[size_right];
+   for(int k=0 ; k<std::max(size_left, size_right) ; k++)
+   {    Force_close();
+        if(k < size_left)
+        {
+            left[k] = rects[k+s];
+        }
+        if(k < size_right)
+        {
+            right[k] = rects[k+m+1];
+        }
+   }
+   while(i<size_left && j<size_right)
+   {    Force_close();
+    if(left[i] < right[j])
+    {
+        rects[merge_at] = left[i++];
+        display(merge_at ,10);
+        merge_at++;
         
-    //     mergeIndex++;
-    // }
+        
+    }
+    else 
+    {   rects[merge_at] = right[j++];
+    display(merge_at, 10);
+    merge_at++;
+    
+    }
+   }
 
-    // // Remaining right array elements are placed in the rects array
-    // while (rightIndex < rightNum)
-    // {
-    //     rects[mergeIndex] = rightArr[rightIndex++];
-    //     display(mergeIndex, 10);
-      
-    //     mergeIndex++;
-    // }
-
+    while(j<size_right)
+    {   Force_close();
+        rects[merge_at] = right[j++]; 
+        display(merge_at ,10);
+        merge_at++;
+       
+    }
+   
+   
+    while( i< size_left)
+    {   Force_close();
+        rects[merge_at] = left[i++];
+        display(merge_at, 10);
+        merge_at++;
+     
+    }
 }
 
 void mergeSort(int const start, int const end)
 {
-    // Base case
     if (start >= end) return;
-
+    Force_close();
     int mid = start + (end - start) / 2;
     mergeSort(start, mid);
     mergeSort(mid + 1, end);
     merge_sorted(start, mid, end);
 }
 
-// Best: O(nlogn), Worst: O(n^2), Average: O(nlogn)
+
 void quickSort(int p, int r)
-{
+{   Force_close();
     if (p < r)
     {
         int q = partition(p, r);
@@ -267,7 +287,7 @@ int partition(int p, int r)
     int i = (p - 1);
 
     for (int j = p; j <= r; j++) 
-    {
+    {   Force_close();
         if (rects[j] < pivot)
         {
             display(i, 10);
@@ -292,10 +312,10 @@ void bubbleSort()
     bool swapped;
 
     for (i = 0; i < 99; i++)
-    {
+    {   Force_close();
         swapped = false;
         for (j = 0; j < 99 - i; j++)
-        {
+        {   Force_close();
             if (rects[j] > rects[j + 1])
             {
                 swap(&rects[j], &rects[j + 1]);
